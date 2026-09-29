@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant & Flower Care Directory | PlantStyleHome.com</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        botanical: {
+                            50: '#f2f7f4',
+                            100: '#e1ede5',
+                            200: '#c3dbcd',
+                            500: '#40916c',
+                            600: '#2d6a4f',
+                            700: '#1b4332',
+                            800: '#081c15',
+                            accent: '#d8f3dc',
+                            gold: '#d4a373'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .card-hover {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 28px -6px rgba(27, 67, 50, 0.15);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d6a4f;
+            border-radius: 4px;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 font-sans antialiased selection:bg-botanical-500 selection:text-white">
+
+    <!-- Navigation Header -->
+    <header class="bg-white/95 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-botanical-700 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-botanical-700/20">
+                    <i class="fa-solid fa-leaf text-botanical-accent"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight text-botanical-800 block leading-none">PlantStyleHome</span>
+                    <span class="text-xs font-semibold text-botanical-600 tracking-wider uppercase">Care Directory</span>
+                </div>
+            </div>
+
+            <!-- Quick Site Badge -->
+            <div class="flex items-center gap-2 bg-botanical-50 px-3.5 py-1.5 rounded-full border border-botanical-200 text-botanical-700 text-xs font-bold">
+                <i class="fa-solid fa-seedling"></i>
+                <span>Complete Knowledge Hub</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="relative bg-botanical-800 text-white pt-10 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#d8f3dc_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-botanical-600/30 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <span class="inline-block bg-botanical-700/80 text-botanical-accent text-xs font-semibold px-3.5 py-1.5 rounded-full border border-botanical-600/50 mb-3 tracking-wide shadow-sm">
+                🌿 Plant & Flower Care Guides Directory
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white mb-3 leading-tight">
+                PlantStyleHome Care Hub
+            </h1>
+            <p class="text-botanical-100 text-sm sm:text-base max-w-2xl mx-auto font-light mb-6 leading-relaxed">
+                Explore growth tips, sunlight needs, watering schedules, and seasonal instructions across our plant care guides and floral collections.
+            </p>
+
+            <!-- Search Component -->
+            <div class="max-w-2xl mx-auto relative shadow-2xl rounded-2xl bg-white/10 p-2 border border-white/20 backdrop-blur-md">
+                <div class="relative flex items-center">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 text-botanical-accent text-lg"></i>
+                    <input type="text" id="searchInput" onkeyup="filterGuides()" placeholder="Search (e.g. Monstera, Yellow Flowers, January, Ranunculus)..." 
+                           class="w-full pl-12 pr-10 py-3 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-botanical-accent font-medium text-sm sm:text-base shadow-inner">
+                    <button id="clearSearch" onclick="clearSearchInput()" class="hidden absolute right-3 text-slate-400 hover:text-slate-600 p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category & A-Z Quick Bar -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20 w-full">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200/80 p-4 flex flex-col gap-3">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-filter text-botanical-600 text-xs"></i>
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Main Categories:</span>
+                </div>
+                <span id="resultsCount" class="text-xs font-bold text-botanical-700 bg-botanical-50 px-3 py-1 rounded-full border border-botanical-200">
+                    Loading directory...
+                </span>
+            </div>
+
+            <!-- Category Filter Buttons -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar text-xs font-semibold">
+                <button id="tab-all" onclick="setCategory('all')" class="category-chip shrink-0 px-4 py-2 rounded-xl transition-all shadow-sm bg-botanical-700 text-white">
+                    All Guides (<span id="count-all">0</span>)
+                </button>
+                <button id="tab-colors" onclick="setCategory('colors')" class="category-chip shrink-0 px-4 py-2 rounded-xl transition-all text-slate-600 bg-slate-100 hover:bg-slate-200">
+                    🎨 Color Collections (<span id="count-colors">0</span>)
+                </button>
+                <button id="tab-birth" onclick="setCategory('birth')" class="category-chip shrink-0 px-4 py-2 rounded-xl transition-all text-slate-600 bg-slate-100 hover:bg-slate-200">
+                    📅 Birth & Seasonal (<span id="count-birth">0</span>)
+                </button>
+                <button id="tab-plants" onclick="setCategory('plants')" class="category-chip shrink-0 px-4 py-2 rounded-xl transition-all text-slate-600 bg-slate-100 hover:bg-slate-200">
+                    🪴 Houseplants & Trees (<span id="count-plants">0</span>)
+                </button>
+                <button id="tab-atoz" onclick="setCategory('atoz')" class="category-chip shrink-0 px-4 py-2 rounded-xl transition-all text-slate-600 bg-slate-100 hover:bg-slate-200">
+                    🔤 A–Z Floral Directory (<span id="count-atoz">0</span>)
+                </button>
+            </div>
+
+            <!-- A-Z Quick Filter Bar -->
+            <div class="pt-2 border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                <span class="text-[11px] font-bold text-slate-400 shrink-0 mr-1">A–Z:</span>
+                <button onclick="filterLetter('ALL')" class="az-btn px-2 py-0.5 text-xs font-bold rounded bg-botanical-100 text-botanical-800">ALL</button>
+                <script>
+                    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+                    alphabet.forEach(letter => {
+                        document.write(`<button onclick="filterLetter('${letter}')" class="az-btn px-1.5 py-0.5 text-xs font-semibold rounded hover:bg-slate-200 text-slate-600">${letter}</button>`);
+                    });
+                </script>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        <div class="flex items-center justify-between mb-6">
+            <h2 id="sectionTitle" class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                All Plant & Flower Guides
+            </h2>
+        </div>
+
+        <!-- Cards Grid -->
+        <div id="guidesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic Cards Populated via JS -->
+        </div>
+
+        <!-- Empty Search State -->
+        <div id="noResults" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 my-8">
+            <div class="w-16 h-16 bg-botanical-50 rounded-full flex items-center justify-center mx-auto mb-3 text-botanical-600 text-2xl">
+                <i class="fa-solid fa-seedling"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">No matching care guides found</h3>
+            <p class="text-slate-500 text-sm max-w-sm mx-auto mb-5">Try searching for a different plant name, flower color, or birth month.</p>
+            <button onclick="resetFilters()" class="bg-botanical-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-botanical-800 transition-colors shadow-md">
+                Reset All Filters
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal View for Care Details -->
+    <div id="careModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-5 right-5 w-9 h-9 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-500 transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="mb-4">
+                <span id="modalCategory" class="text-xs font-bold px-3 py-1 rounded-full bg-botanical-100 text-botanical-700 inline-block mb-2">
+                    Tag
+                </span>
+                <h3 id="modalTitle" class="text-2xl font-black text-slate-900 leading-snug">
+                    Plant Title
+                </h3>
+            </div>
+
+            <!-- Quick Requirements Badge -->
+            <div class="grid grid-cols-3 gap-2 my-4 p-3 bg-botanical-50/80 rounded-2xl border border-botanical-100 text-center">
+                <div>
+                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Light</span>
+                    <span id="modalSun" class="text-xs font-bold text-slate-800 flex items-center justify-center gap-1 mt-0.5">
+                        <i class="fa-solid fa-sun text-amber-500"></i> Bright
+                    </span>
+                </div>
+                <div>
+                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Water</span>
+                    <span id="modalWater" class="text-xs font-bold text-slate-800 flex items-center justify-center gap-1 mt-0.5">
+                        <i class="fa-solid fa-droplet text-sky-500"></i> Moderate
+                    </span>
+                </div>
+                <div>
+                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Difficulty</span>
+                    <span id="modalDiff" class="text-xs font-bold text-slate-800 flex items-center justify-center gap-1 mt-0.5">
+                        <i class="fa-solid fa-gauge text-emerald-600"></i> Easy
+                    </span>
+                </div>
+            </div>
+
+            <div class="space-y-3 mb-6 text-sm text-slate-600 leading-relaxed font-normal">
+                <h4 class="font-bold text-slate-800 text-base">Care Overview</h4>
+                <p id="modalDesc">Care guide details...</p>
+            </div>
+
+            <div id="modalCtaContainer">
+                <button onclick="closeModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-6 rounded-xl transition-all text-sm shadow-md">
+                    Close Care Summary
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-botanical-800 text-slate-300 py-8 border-t border-botanical-700 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-leaf text-botanical-accent text-base"></i>
+                <span class="text-sm font-bold text-white">PlantStyleHome.com</span>
+            </div>
+            <p class="text-slate-400">
+                Official Botanical Care Directory & Knowledge Hub.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Full Dataset including 5 EXACT hyperlinks to plantstylehome.com
+        const careGuides = [
+            // --- 1. SPECIFIC PLANTS & TREES (Includes 3 External Hyperlinks) ---
+            { 
+                id: 1, 
+                title: "Monstera Plants Care Guide", 
+                url: "https://plantstylehome.com/monstera-plants/", 
+                isExternal: true, 
+                category: "plants", 
+                tag: "Houseplant", 
+                letter: "M", 
+                sun: "Bright Indirect", 
+                water: "Weekly", 
+                diff: "Easy", 
+                desc: "Complete care guide covering repotting, leaf fenestration, moss poles, and watering routines for Monstera Deliciosa and Adansonii." 
+            },
+            { 
+                id: 2, 
+                title: "Ranunculus Flower Care Guide", 
+                url: "https://plantstylehome.com/ranunculus-flower/", 
+                isExternal: true, 
+                category: "plants", 
+                tag: "Flowering Bulb", 
+                letter: "R", 
+                sun: "Full Sun", 
+                water: "Moderate", 
+                diff: "Moderate", 
+                desc: "Tips for growing delicate Ranunculus blooms from corms, managing soil drainage, and harvesting long-lasting cut flowers." 
+            },
+            { 
+                id: 3, 
+                title: "Autumn Blaze Maple Guide", 
+                url: "https://plantstylehome.com/autumn-blaze-maple/", 
+                isExternal: true, 
+                category: "plants", 
+                tag: "Shade Tree", 
+                letter: "A", 
+                sun: "Full Sun", 
+                water: "Moderate", 
+                diff: "Easy", 
+                desc: "Fast-growing shade tree care instructions, deep watering routines, and fertilizer guidelines for intense fall leaf color." 
+            },
+            { 
+                id: 4, 
+                title: "Mesquite Trees Care Guide", 
+                category: "plants", 
+                tag: "Desert Tree", 
+                letter: "M", 
+                sun: "Full Sun", 
+                water: "Low / Drought", 
+                diff: "Easy", 
+                desc: "Drought-tolerant landscaping techniques, root deep watering practices, and seasonal pruning for Mesquite trees." 
+            },
+            { 
+                id: 5, 
+                title: "Asiatic Lily Care Guide", 
+                category: "plants", 
+                tag: "Perennial Flower", 
+                letter: "A", 
+                sun: "Full Sun", 
+                water: "Moderate", 
+                diff: "Easy", 
+                desc: "Planting depth, stem support, soil requirements, and winter protection tips for vibrant Asiatic Lilies." 
+            },
+            { 
+                id: 6, 
+                title: "Magnolia Flowers & Trees", 
+                category: "plants", 
+                tag: "Flowering Tree", 
+                letter: "M", 
+                sun: "Full Sun", 
+                water: "Moderate", 
+                diff: "Easy", 
+                desc: "Soil pH preferences, frost protection, and fertilizer routines for grand Magnolia blossoms." 
+            },
+            { 
+                id: 7, 
+                title: "Night Blooming Jasmine", 
+                category: "plants", 
+                tag: "Fragrant Shrub", 
+                letter: "N", 
+                sun: "Partial Sun", 
+                water: "Moderate", 
+                diff: "Easy", 
+                desc: "Maximizing evening fragrance releases, pruning container-grown jasmine, and winter overwintering." 
+            },
+            { 
+                id: 8, 
+                title: "Bamboo Plant Care", 
+                category: "plants", 
+                tag: "Indoor & Outdoor", 
+                letter: "B", 
+                sun: "Partial Sun", 
+                water: "High", 
+                diff: "Easy", 
+                desc: "Maintaining Lucky Bamboo in water or soil, preventing leaf yellowing, and pruning stalks." 
+            },
+            { 
+                id: 9, 
+                title: "Cat Palm Care Guide", 
+                category: "plants", 
+                tag: "Indoor Palm", 
+                letter: "C", 
+                sun: "Bright Indirect", 
+                water: "Keep Moist", 
+                diff: "Moderate", 
+                desc: "Maintaining high indoor humidity, frond trimming, and soil moisture balance for lush Cat Palms." 
+            },
+            { 
+                id: 10, 
+                title: "Dragon Fruit Plant Care", 
+                category: "plants", 
+                tag: "Fruiting Cactus", 
+                letter: "D", 
+                sun: "Full Sun", 
+                water: "Low", 
+                diff: "Moderate", 
+                desc: "Trellis construction, hand pollination tips, and warm climate care for fruiting dragon fruit cacti." 
+            },
+            { 
+                id: 11, 
+                title: "Umbrella Tree (Schefflera)", 
+                category: "plants", 
+                tag: "Indoor Tree", 
+                letter: "U", 
+                sun: "Medium Light", 
+                water: "Moderate", 
+                diff: "Easy", 
+                desc: "Pruning for bushy growth, pest control, and light placement for indoor Schefflera plants." 
+            },
+            { 
+                id: 12, 
+                title: "Zygocactus (Christmas Cactus)", 
+                category: "plants", 
+                tag: "Holiday Bloom", 
+                letter: "Z", 
+                sun: "Indirect Light", 
+                water: "Low to Mod", 
+                diff: "Easy", 
+                desc: "Triggering holiday bloom cycles with darkness and cool temperature periods." 
+            },
+
+            // --- 2. COLOR COLLECTIONS (Includes 1 External Hyperlink) ---
+            { 
+                id: 13, 
+                title: "Yellow Flowers Collection", 
+                url: "https://plantstylehome.com/yellow-flowers/", 
+                isExternal: true, 
+                category: "colors", 
+                tag: "Yellow Blooms", 
+                letter: "Y", 
+                sun: "Full Sun", 
+                water: "Moderate", 
+                diff: "Easy", 
+                desc: "Bright yellow annuals and perennials to create sunlit garden borders and cheerful bouquets." 
+            },
+            { id: 14, title: "Brown Flowers Guide", category: "colors", tag: "Earthy Shades", letter: "B", sun: "Partial Sun", water: "Moderate", diff: "Moderate", desc: "Unique bronze, chocolate, and mahogany blooms for sophisticated natural landscaping." },
+            { id: 15, title: "Red Flowers Collection", category: "colors", tag: "Crimson Red", letter: "R", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Vibrant red perennials, roses, and flowering shrubs for high-energy garden accents." },
+            { id: 16, title: "Orange Flowers Guide", category: "colors", tag: "Warm Orange", letter: "O", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Fiery orange blossoms that bring warmth and pollinator attraction to summer gardens." },
+            { id: 17, title: "Black Flowers Guide", category: "colors", tag: "Dark & Rare", letter: "B", sun: "Full Sun", water: "Moderate", diff: "Moderate", desc: "Rare near-black dahlias, petunias, and tulips for dramatic garden contrast." },
+            { id: 18, title: "Blue Flowers Collection", category: "colors", tag: "Cool Blue", letter: "B", sun: "Partial to Full", water: "Moderate", diff: "Easy", desc: "Cool-toned blue flowers like delphiniums, bellflowers, and hydrangeas." },
+            { id: 19, title: "Pink Flowers Guide", category: "colors", tag: "Blush & Magenta", letter: "P", sun: "Partial Sun", water: "Moderate", diff: "Easy", desc: "From soft blush peonies to deep pink roses, explore pink garden varieties." },
+            { id: 20, title: "White Flowers Collection", category: "colors", tag: "Classic White", letter: "W", sun: "Partial Shade", water: "Moderate", diff: "Easy", desc: "Designing elegant white moon gardens with evening-scented white blooms." },
+            { id: 21, title: "Green Flowers Guide", category: "colors", tag: "Botanical Green", letter: "G", sun: "Partial Sun", water: "Moderate", diff: "Moderate", desc: "Chartreuse and green-hued blossoms adding rich texture to cut flower designs." },
+            { id: 22, title: "Purple Flowers Collection", category: "colors", tag: "Violet Tones", letter: "P", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Rich violet, lavender, and plum flower varieties for pollinator gardens." },
+            { id: 23, title: "Gothic Flowers Guide", category: "colors", tag: "Moody Palette", letter: "G", sun: "Partial Shade", water: "Moderate", diff: "Easy", desc: "Moody burgundy, black, and deep purple floral choices tailored for Gothic garden styles." },
+
+            // --- 3. BIRTH MONTH & SEASONAL FLOWERS (Includes 1 External Hyperlink) ---
+            { 
+                id: 24, 
+                title: "Master Birth Month Flowers", 
+                url: "https://plantstylehome.com/birth-month-flowers/", 
+                isExternal: true, 
+                category: "birth", 
+                tag: "Birth Flowers", 
+                letter: "B", 
+                sun: "Varies", 
+                water: "Varies", 
+                diff: "Easy", 
+                desc: "Comprehensive guide to official birth month flowers, symbolic meanings, and gift ideas." 
+            },
+            { id: 25, title: "January Birth Flowers (Carnation)", category: "birth", tag: "Jan Birth", letter: "J", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Growing and caring for Carnations and Snowdrops, January's symbolic flowers." },
+            { id: 26, title: "February Birth Flowers (Violet)", category: "birth", tag: "Feb Birth", letter: "F", sun: "Partial Sun", water: "Moderate", diff: "Easy", desc: "Indoor Violet care and Primrose garden planting guidelines." },
+            { id: 27, title: "March Birth Flowers (Daffodil)", category: "birth", tag: "Mar Birth", letter: "M", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Daffodil bulb care, naturalizing in lawns, and post-bloom maintenance." },
+            { id: 28, title: "April Birth Flowers (Daisy & Sweet Pea)", category: "birth", tag: "Apr Birth", letter: "A", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Growing sweet peas on trellises and English daisy border care." },
+            { id: 29, title: "May Birth Flowers (Lily of the Valley)", category: "birth", tag: "May Birth", letter: "M", sun: "Shade", water: "Moist", diff: "Easy", desc: "Shade garden positioning and care for Lily of the Valley and Hawthorn." },
+            { id: 30, title: "June Birth Flowers (Rose & Honeysuckle)", category: "birth", tag: "Jun Birth", letter: "J", sun: "Full Sun", water: "Moderate", diff: "Moderate", desc: "Pruning roses for summer blooms and trellis training honeysuckle vines." },
+            { id: 31, title: "July Birth Flowers (Larkspur)", category: "birth", tag: "Jul Birth", letter: "J", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Larkspur tall spike staking and Water Lily pond care." },
+            { id: 32, title: "August Birth Flowers (Gladiolus)", category: "birth", tag: "Aug Birth", letter: "A", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Gladiolus corm planting and colorful Poppy garden seed sowing." },
+            { id: 33, title: "September Birth Flowers (Aster)", category: "birth", tag: "Sep Birth", letter: "S", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Late-summer Aster maintenance and Morning Glory climber care." },
+            { id: 34, title: "October Birth Flowers (Marigold)", category: "birth", tag: "Oct Birth", letter: "O", sun: "Full Sun", water: "Low", diff: "Easy", desc: "Companion planting with Marigolds and Cosmos flower seed saving." },
+            { id: 35, title: "November Birth Flower (Chrysanthemum)", category: "birth", tag: "Nov Birth", letter: "N", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Potted mum care and winterizing perennial Chrysanthemums." },
+            { id: 36, title: "December Birth Flower (Narcissus)", category: "birth", tag: "Dec Birth", letter: "D", sun: "Partial Sun", water: "Moderate", diff: "Easy", desc: "Indoor forcing of Paperwhite Narcissus bulbs for winter flowering." },
+            { id: 37, title: "Spring Flowers Guide", category: "birth", tag: "Spring Season", letter: "S", sun: "Full Sun", water: "Moderate", diff: "Easy", desc: "Tulip, Hyacinth, and Crocus spring bulb blooming care." },
+            { id: 38, title: "Summer Flowers Guide", category: "birth", tag: "Summer Season", letter: "S", sun: "Full Sun", water: "High", diff: "Easy", desc: "Heat-tolerant annuals and summer blooming perennials." },
+            { id: 39, title: "Fall Flowers Guide", category: "birth", tag: "Autumn Season", letter: "F", sun: "Partial Sun", water: "Moderate", diff: "Easy", desc: "Late-season mums, asters, and goldenrods for autumn color." },
+            { id: 40, title: "Winter Flowers Guide", category: "birth", tag: "Winter Season", letter: "W", sun: "Partial Sun", water: "Low", diff: "Moderate", desc: "Frost-tolerant hellebores, witch hazel, and winter container arrangements." },
+
+            // --- 4. A-Z FLOWER DIRECTORY TAGS ---
+            { id: 41, title: "Flowers Starting with A", category: "atoz", tag: "Letter A", letter: "A", sun: "Varies", water: "Varies", diff: "Easy", desc: "Azalea, Anemone, Amaryllis, Allium, and Aster species guides." },
+            { id: 42, title: "Flowers Starting with B", category: "atoz", tag: "Letter B", letter: "B", sun: "Varies", water: "Varies", diff: "Easy", desc: "Begonia, Bleeding Heart, Bougainvillea, and Buttercup care." },
+            { id: 43, title: "Flowers Starting with C", category: "atoz", tag: "Letter C", letter: "C", sun: "Varies", water: "Varies", diff: "Easy", desc: "Camellia, Chrysanthemum, Carnation, and Cosmos guides." },
+            { id: 44, title: "Flowers Starting with D", category: "atoz", tag: "Letter D", letter: "D", sun: "Varies", water: "Varies", diff: "Easy", desc: "Dahlia, Daffodil, Delphinium, and Dianthus growing tips." },
+            { id: 45, title: "Flowers Starting with E", category: "atoz", tag: "Letter E", letter: "E", sun: "Varies", water: "Varies", diff: "Easy", desc: "Echinacea, Evening Primrose, Edelweiss, and Euphorbia." },
+            { id: 46, title: "Flowers Starting with F", category: "atoz", tag: "Letter F", letter: "F", sun: "Varies", water: "Varies", diff: "Easy", desc: "Freesia, Fuchsia, Forget-Me-Not, and Frangipani care." },
+            { id: 47, title: "Flowers Starting with G", category: "atoz", tag: "Letter G", letter: "G", sun: "Varies", water: "Varies", diff: "Easy", desc: "Gardenia, Geranium, Gladiolus, and Gypsophila." },
+            { id: 48, title: "Flowers Starting with H", category: "atoz", tag: "Letter H", letter: "H", sun: "Varies", water: "Varies", diff: "Easy", desc: "Hydrangea, Hibiscus, Heliotrope, and Hellebore care." },
+            { id: 49, title: "Flowers Starting with I", category: "atoz", tag: "Letter I", letter: "I", sun: "Varies", water: "Varies", diff: "Easy", desc: "Iris, Impatiens, Ipomoea, and Ixora plant guides." },
+            { id: 50, title: "Flowers Starting with J", category: "atoz", tag: "Letter J", letter: "J", sun: "Varies", water: "Varies", diff: "Easy", desc: "Jasmine, Jonquil, and Jacob's Ladder species guides." }
+        ];
+
+        let activeCategory = 'all';
+        let activeLetter = 'ALL';
+
+        function updateCounts() {
+            document.getElementById('count-all').textContent = careGuides.length;
+            document.getElementById('count-colors').textContent = careGuides.filter(g => g.category === 'colors').length;
+            document.getElementById('count-birth').textContent = careGuides.filter(g => g.category === 'birth').length;
+            document.getElementById('count-plants').textContent = careGuides.filter(g => g.category === 'plants').length;
+            document.getElementById('count-atoz').textContent = careGuides.filter(g => g.category === 'atoz').length;
+        }
+
+        function renderCards(items) {
+            const grid = document.getElementById('guidesGrid');
+            const noResults = document.getElementById('noResults');
+            const resultsCount = document.getElementById('resultsCount');
+
+            grid.innerHTML = '';
+            resultsCount.textContent = `${items.length} Guide${items.length === 1 ? '' : 's'} Available`;
+
+            if (items.length === 0) {
+                grid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            noResults.classList.add('hidden');
+
+            items.forEach(guide => {
+                const card = document.createElement('article');
+                card.className = 'bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm card-hover flex flex-col justify-between cursor-pointer group relative';
+                
+                card.onclick = (e) => {
+                    if(!e.target.closest('a')) {
+                        openModal(guide.id);
+                    }
+                };
+
+                const iconClass = guide.category === 'plants' ? 'fa-tree text-emerald-600' :
+                                  guide.category === 'colors' ? 'fa-palette text-amber-500' :
+                                  guide.category === 'birth' ? 'fa-calendar-days text-sky-500' : 'fa-font text-indigo-600';
+
+                let actionButtonHtml = '';
+                if(guide.isExternal && guide.url) {
+                    actionButtonHtml = `
+                        <a href="${guide.url}" target="_blank" rel="noopener noreferrer" 
+                           class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-botanical-700 hover:bg-botanical-800 px-3.5 py-1.5 rounded-xl transition-colors shadow-sm">
+                            <span>Read Full Guide</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    `;
+                } else {
+                    actionButtonHtml = `
+                        <button onclick="openModal(${guide.id})" class="inline-flex items-center gap-1.5 text-xs font-bold text-botanical-700 bg-botanical-50 hover:bg-botanical-100 px-3.5 py-1.5 rounded-xl transition-colors border border-botanical-200">
+                            <span>View Summary</span>
+                            <i class="fa-solid fa-eye text-[10px]"></i>
+                        </button>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-botanical-50 text-botanical-700 border border-botanical-100 flex items-center gap-1.5">
+                                <i class="fa-solid ${iconClass} text-xs"></i>
+                                <span>${guide.tag}</span>
+                            </span>
+                            <span class="text-[11px] font-bold text-slate-400">
+                                <i class="fa-solid fa-gauge text-slate-300"></i> ${guide.diff}
+                            </span>
+                        </div>
+
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900 mb-2 leading-snug group-hover:text-botanical-600 transition-colors">
+                            ${guide.title}
+                        </h3>
+
+                        <p class="text-xs text-slate-500 leading-relaxed font-light mb-4 line-clamp-2">
+                            ${guide.desc}
+                        </p>
+
+                        <div class="flex items-center gap-3 py-2 px-3 bg-slate-50 rounded-xl mb-4 text-[11px] text-slate-600 font-medium">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-sun text-amber-500"></i> ${guide.sun}</span>
+                            <span class="text-slate-300">|</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-droplet text-sky-500"></i> ${guide.water}</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Letter ${guide.letter}</span>
+                        ${actionButtonHtml}
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function filterGuides() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const clearBtn = document.getElementById('clearSearch');
+
+            if (query.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            const filtered = careGuides.filter(guide => {
+                const matchesCategory = (activeCategory === 'all') || (guide.category === activeCategory);
+                const matchesLetter = (activeLetter === 'ALL') || (guide.letter.toUpperCase() === activeLetter);
+                const matchesSearch = guide.title.toLowerCase().includes(query) || 
+                                      guide.tag.toLowerCase().includes(query) ||
+                                      guide.desc.toLowerCase().includes(query);
+
+                return matchesCategory && matchesLetter && matchesSearch;
+            });
+
+            renderCards(filtered);
+        }
+
+        function setCategory(category) {
+            activeCategory = category;
+            activeLetter = 'ALL';
+            updateAzButtons();
+
+            document.querySelectorAll('.category-chip').forEach(btn => {
+                btn.classList.remove('bg-botanical-700', 'text-white', 'shadow-sm');
+                btn.classList.add('text-slate-600', 'bg-slate-100');
+            });
+
+            const activeBtn = document.getElementById(`tab-${category}`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-botanical-700', 'text-white', 'shadow-sm');
+                activeBtn.classList.remove('text-slate-600', 'bg-slate-100');
+            }
+
+            const titles = {
+                'all': 'All Plant & Flower Guides',
+                'colors': 'Color Collections',
+                'birth': 'Birth Month & Seasonal Flowers',
+                'plants': 'Houseplants & Tree Guides',
+                'atoz': 'A–Z Floral Directory'
+            };
+
+            document.getElementById('sectionTitle').textContent = titles[category] || 'Care Directory';
+            filterGuides();
+        }
+
+        function filterLetter(letter) {
+            activeLetter = letter;
+            updateAzButtons();
+            filterGuides();
+        }
+
+        function updateAzButtons() {
+            document.querySelectorAll('.az-btn').forEach(btn => {
+                if (btn.textContent.trim() === activeLetter) {
+                    btn.className = 'az-btn px-2 py-0.5 text-xs font-bold rounded bg-botanical-700 text-white shadow-sm';
+                } else {
+                    btn.className = 'az-btn px-1.5 py-0.5 text-xs font-semibold rounded hover:bg-slate-200 text-slate-600';
+                }
+            });
+        }
+
+        function clearSearchInput() {
+            document.getElementById('searchInput').value = '';
+            filterGuides();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            activeLetter = 'ALL';
+            updateAzButtons();
+            setCategory('all');
+        }
+
+        function openModal(id) {
+            const guide = careGuides.find(g => g.id === id);
+            if(!guide) return;
+
+            document.getElementById('modalTitle').textContent = guide.title;
+            document.getElementById('modalCategory').textContent = guide.tag;
+            document.getElementById('modalSun').innerHTML = `<i class="fa-solid fa-sun text-amber-500"></i> ${guide.sun}`;
+            document.getElementById('modalWater').innerHTML = `<i class="fa-solid fa-droplet text-sky-500"></i> ${guide.water}`;
+            document.getElementById('modalDiff').innerHTML = `<i class="fa-solid fa-gauge text-emerald-600"></i> ${guide.diff}`;
+            document.getElementById('modalDesc').textContent = guide.desc;
+
+            const ctaContainer = document.getElementById('modalCtaContainer');
+            if (guide.isExternal && guide.url) {
+                ctaContainer.innerHTML = `
+                    <a href="${guide.url}" target="_blank" rel="noopener noreferrer" class="w-full bg-botanical-700 hover:bg-botanical-800 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm">
+                        <span>Read Full Guide on PlantStyleHome.com</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                    </a>
+                `;
+            } else {
+                ctaContainer.innerHTML = `
+                    <button onclick="closeModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-6 rounded-xl transition-all text-sm shadow-md">
+                        Close Care Summary
+                    </button>
+                `;
+            }
+
+            const modal = document.getElementById('careModal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('careModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('careModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        window.onload = function() {
+            updateCounts();
+            renderCards(careGuides);
+        };
+    </script>
+</body>
+</html>
